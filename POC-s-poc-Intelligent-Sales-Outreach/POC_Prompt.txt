@@ -1,0 +1,808 @@
+```
+# AI Sales Engagement Platform — Full Stack POC
+
+## PROJECT OVERVIEW
+Build a fully functional AI-powered B2B Sales Engagement Platform. This is a unified workspace for sales reps to manage outreach, automate email cadences, get AI coaching during sales plays, and track pipeline forecasts. The platform uses real AI (Groq), real email sending (SMTP), and real persistent data (Supabase).
+
+---
+
+## TECH STACK
+
+### Frontend
+- Vite + React + TypeScript
+- Tailwind CSS (no component library, pure utility classes)
+- Zustand (global state)
+- React Router v6 (client-side routing)
+- react-hot-toast (notifications)
+- date-fns (date manipulation)
+- lucide-react (icons)
+- axios (HTTP client)
+
+### Backend
+- FastAPI (Python)
+- aiosmtplib (async SMTP for email sending from user's own account)
+- apscheduler (scheduled email jobs)
+- groq (Python SDK for Groq AI)
+- supabase-py (Supabase client)
+- python-dotenv
+
+### Infrastructure
+- Supabase (PostgreSQL + realtime)
+- Groq API: model = `llama-3.3-70b-versatile`
+
+---
+
+## ENVIRONMENT VARIABLES
+
+Backend `.env`:
+```
+SUPABASE_URL=
+SUPABASE_SERVICE_KEY=
+GROQ_API_KEY=
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=yourmail@gmail.com
+SMTP_PASSWORD=your_app_password
+SMTP_FROM_NAME=Your Name
+```
+
+Frontend `.env`:
+```
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+---
+
+## DATABASE SCHEMA (Supabase/PostgreSQL)
+
+Create all tables with RLS disabled for POC. Use UUIDs as PKs. Run this SQL in Supabase SQL editor:
+
+```sql
+-- Reps (sales users)
+CREATE TABLE reps (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  role TEXT DEFAULT 'Account Executive',
+  quota NUMERIC DEFAULT 500000,
+  avatar_initials TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Companies
+CREATE TABLE companies (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  industry TEXT,
+  website TEXT,
+  employee_count INT,
+  location TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Contacts
+CREATE TABLE contacts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  whatsapp_number TEXT,
+  company_id UUID REFERENCES companies(id),
+  title TEXT,
+  preferred_language TEXT DEFAULT 'English',
+  timezone TEXT DEFAULT 'America/New_York',
+  activity_score INT DEFAULT 0,
+  last_contacted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Deals (CRM)
+CREATE TABLE deals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  contact_id UUID REFERENCES contacts(id),
+  company_id UUID REFERENCES companies(id),
+  rep_id UUID REFERENCES reps(id),
+  stage TEXT CHECK (stage IN ('Prospecting','Qualification','Discovery','Proposal','Negotiation','Closed Won','Closed Lost')),
+  amount NUMERIC DEFAULT 0,
+  probability INT DEFAULT 0,
+  close_date DATE,
+  forecast_category TEXT CHECK (forecast_category IN ('Commit','Best Case','Pipeline','Omit')) DEFAULT 'Pipeline',
+  next_step TEXT,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Email templates
+CREATE TABLE email_templates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  category TEXT,
+  subject_template TEXT NOT NULL,
+  body_template TEXT NOT NULL,
+  variables JSONB DEFAULT '[]',
+  language TEXT DEFAULT 'English',
+  open_rate NUMERIC DEFAULT 0,
+  reply_rate NUMERIC DEFAULT 0,
+  times_used INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Emails
+CREATE TABLE emails (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  deal_id UUID REFERENCES deals(id),
+  contact_id UUID REFERENCES contacts(id),
+  rep_id UUID REFERENCES reps(id),
+  thread_id TEXT,
+  subject TEXT NOT NULL,
+  body TEXT NOT NULL,
+  status TEXT CHECK (status IN ('draft','scheduled','sent','opened','replied','bounced')) DEFAULT 'draft',
+  scheduled_at TIMESTAMPTZ,
+  sent_at TIMESTAMPTZ,
+  opened_at TIMESTAMPTZ,
+  replied_at TIMESTAMPTZ,
+  language TEXT DEFAULT 'English',
+  ai_generated BOOLEAN DEFAULT false,
+  template_id UUID REFERENCES email_templates(id),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Call transcripts (demo data)
+CREATE TABLE call_transcripts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  contact_id UUID REFERENCES contacts(id),
+  deal_id UUID REFERENCES deals(id),
+  rep_id UUID REFERENCES reps(id),
+  duration_seconds INT,
+  transcript TEXT NOT NULL,
+  summary TEXT,
+  language_detected TEXT DEFAULT 'English',
+  sentiment TEXT CHECK (sentiment IN ('Positive','Neutral','Negative')),
+  key_topics JSONB DEFAULT '[]',
+  call_date TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Sales plays
+CREATE TABLE plays (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  type TEXT CHECK (type IN ('Cold Outreach','Cross-Sell','Upsell','Onboarding','Renewal','Re-Engagement')),
+  description TEXT,
+  target_stages TEXT[],
+  total_steps INT DEFAULT 0,
+  duration_days INT DEFAULT 30,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Flows (automated multi-step sequences)
+CREATE TABLE flows (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  play_id UUID REFERENCES plays(id),
+  name TEXT NOT NULL,
+  description TEXT,
+  trigger_type TEXT CHECK (trigger_type IN ('deal_stage_change','time_elapsed','email_opened','email_replied','manual')),
+  trigger_condition JSONB DEFAULT '{}',
+  status TEXT CHECK (status IN ('active','paused','draft')) DEFAULT 'active',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Flow steps
+CREATE TABLE flow_steps (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  flow_id UUID REFERENCES flows(id) ON DELETE CASCADE,
+  step_number INT NOT NULL,
+  channel TEXT CHECK (channel IN ('email','whatsapp','call','task')) DEFAULT 'email',
+  delay_days INT DEFAULT 0,
+  subject_template TEXT,
+  body_template TEXT,
+  action_description TEXT,
+  template_id UUID REFERENCES email_templates(id),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Flow enrollments
+CREATE TABLE flow_enrollments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  flow_id UUID REFERENCES flows(id),
+  contact_id UUID REFERENCES contacts(id),
+  deal_id UUID REFERENCES deals(id),
+  rep_id UUID REFERENCES reps(id),
+  current_step INT DEFAULT 1,
+  status TEXT CHECK (status IN ('active','completed','paused','exited')) DEFAULT 'active',
+  enrolled_at TIMESTAMPTZ DEFAULT NOW(),
+  next_action_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ
+);
+
+-- Tasks (consolidated daily to-do queue)
+CREATE TABLE tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  rep_id UUID REFERENCES reps(id),
+  contact_id UUID REFERENCES contacts(id),
+  deal_id UUID REFERENCES deals(id),
+  flow_enrollment_id UUID REFERENCES flow_enrollments(id),
+  type TEXT CHECK (type IN ('email','call','whatsapp','review','custom')) NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  due_date DATE DEFAULT CURRENT_DATE,
+  priority TEXT CHECK (priority IN ('urgent','high','normal','low')) DEFAULT 'normal',
+  status TEXT CHECK (status IN ('pending','snoozed','completed','dismissed')) DEFAULT 'pending',
+  snoozed_until DATE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  completed_at TIMESTAMPTZ
+);
+
+-- Play guidelines (AI-generated coaching content)
+CREATE TABLE play_guidelines (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  play_id UUID REFERENCES plays(id),
+  deal_stage TEXT,
+  step_number INT,
+  channel TEXT,
+  guideline_title TEXT,
+  guideline_content TEXT,
+  ai_generated BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Forecast entries
+CREATE TABLE forecast_entries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  rep_id UUID REFERENCES reps(id),
+  deal_id UUID REFERENCES deals(id),
+  period TEXT,
+  year INT,
+  forecast_category TEXT CHECK (forecast_category IN ('Commit','Best Case','Pipeline','Omit')),
+  rep_override_amount NUMERIC,
+  manager_override_amount NUMERIC,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+---
+
+## SEED DATA SCRIPT
+
+Create `backend/seed.py`. Run once. Seed the following (all interconnected via foreign keys):
+
+**Reps (3):**
+- Sarah Chen, sarah.chen@acme.com, Account Executive, quota $600k
+- Marcus Rodriguez, marcus.r@acme.com, Senior AE, quota $800k
+- Priya Sharma, priya.s@acme.com, Account Executive, quota $500k
+
+**Companies (15):** Diverse industries — SaaS, Fintech, Healthcare, Retail, Manufacturing. Include: TechNova Inc, Meridian Financial, HealthBridge Systems, RetailCore, Apex Manufacturing, Cloudify Solutions, DataVault Corp, NexGen Pharma, BlueStar Retail, Fusion Analytics, Quantum Logistics, PrimeCare Networks, Stellar SaaS, Ironclad Security, Vertex Commerce.
+
+**Contacts (35):** 2-3 per company. Mix of CTOs, VP Sales, CFOs, Heads of Operations. Include varied timezones (US/EU/APAC), some with Spanish/French/German preferred language, varied activity scores (0-100).
+
+**Deals (25):** Cover all 7 stages, varied amounts ($15k–$280k), various close dates (some overdue, some current quarter, some next quarter). Assign 8-10 deals per rep. Mix of forecast categories.
+
+**Email Templates (12):**
+- Cold Outreach (2): "ROI-focused intro", "Pain point opener"
+- Follow Up (3): "Post-demo recap", "After no-reply nudge", "Proposal follow-up"
+- Proposal (2): "Custom proposal cover", "Pricing discussion"
+- Closing (2): "Decision timeline ask", "Final offer"
+- Upsell (1): "Expansion opportunity"
+- Onboarding (2): "Welcome kickoff", "30-day check-in"
+
+Each template must have realistic professional body copy with {{contact_name}}, {{company_name}}, {{rep_name}}, {{deal_amount}} variables. Set realistic open_rate (18–42%) and reply_rate (3–12%).
+
+**Plays (4):**
+- "Cold Outreach Play" — 5 steps, 21 days
+- "Post-Demo Nurture" — 4 steps, 14 days
+- "Expansion / Upsell" — 6 steps, 30 days
+- "Renewal & Re-engagement" — 5 steps, 25 days
+
+**Flows (6):** 2 per play (different trigger conditions). Each with 4–6 steps mixing email, whatsapp, call, review tasks.
+
+**Flow Enrollments (15):** Mix of active/completed. Some mid-sequence.
+
+**Call Transcripts (10):** Rich, realistic transcripts (400–600 words each). Format:
+```
+[00:00] Rep: ...
+[00:45] Contact: ...
+```
+Cover different scenarios: discovery call, demo follow-up, objection handling, pricing discussion, executive check-in. Include 2 in Spanish, 1 in French (language_detected field set accordingly). Include AI-written summary and key_topics array.
+
+**Emails (40):** Historical sent/opened/replied emails across deals. Realistic subjects and bodies. Mix of statuses. Some scheduled for future.
+
+**Tasks (30):** Mix of types, priorities, due dates — 10 due today, 10 past due, 10 upcoming. Assigned across all 3 reps.
+
+**Play Guidelines (20):** AI-coaching content for each play × stage combination.
+
+Seed script must be idempotent — check if data exists before inserting. Print a summary of what was inserted.
+
+---
+
+## BACKEND API (FastAPI)
+
+### Structure
+```
+backend/
+  main.py
+  routers/
+    tasks.py
+    emails.py
+    ai.py
+    flows.py
+    deals.py
+    contacts.py
+    plays.py
+    forecast.py
+    calls.py
+  services/
+    groq_service.py
+    email_service.py
+    scheduler_service.py
+  seed.py
+  .env
+```
+
+### Key Endpoints
+
+**Tasks**
+- GET /tasks?rep_id=&status=&due_date= — paginated, sorted by priority + due_date
+- PATCH /tasks/{id} — update status (complete/snooze/dismiss)
+- POST /tasks/bulk — bulk complete/dismiss
+- GET /tasks/summary?rep_id= — counts by type and priority
+
+**Emails**
+- POST /emails/draft — save draft
+- POST /emails/send — immediately send via SMTP
+- POST /emails/schedule — schedule for later (APScheduler picks up)
+- GET /emails?deal_id=&contact_id=&status= — list with filters
+- GET /emails/threads?deal_id= — grouped by thread_id
+
+**AI (Groq)**
+- POST /ai/draft-email
+  - Body: {contact_id, deal_id, intent, language, transcript_id?, template_id?, rep_id}
+  - Returns: {subject, body, language}
+- POST /ai/translate-email
+  - Body: {subject, body, target_language}
+- POST /ai/generate-guidelines
+  - Body: {play_id, deal_stage, context}
+- POST /ai/whatsapp-message
+  - Body: {contact_id, deal_id, intent}
+  - Returns: {message, whatsapp_url}
+- POST /ai/summarize-transcript
+  - Body: {transcript_id}
+
+## CONTEXT ASSEMBLY (Critical)
+
+In `services/groq_service.py`, before every AI call, build a full context object by fetching fresh data from Supabase. Never cache this — always fetch live.
+
+For a given deal_id + contact_id, assemble the following and inject it into every Groq system prompt:
+
+```python
+context = {
+  "contact": {
+    "name": ..., "title": ..., "preferred_language": ...,
+    "timezone": ..., "activity_score": ...
+  },
+  "company": {
+    "name": ..., "industry": ..., "employee_count": ..., "location": ...
+  },
+  "deal": {
+    "title": ..., "stage": ..., "amount": ..., "probability": ...,
+    "close_date": ..., "forecast_category": ..., "next_step": ...,
+    "notes": ..., "days_in_stage": ...  # computed: now - updated_at
+  },
+  "email_history": [
+    # Last 5 emails for this deal, sorted by sent_at desc
+    {
+      "subject": ..., "body_snippet": ...,  # first 200 chars of body
+      "status": ..., "sent_at": ..., "days_ago": ...
+    }
+  ],
+  "call_transcripts": [
+    # All transcripts for this contact, sorted by call_date desc
+    # Full transcript text only for the most recent one
+    # Summary only for the rest
+    {
+      "summary": ..., "key_topics": [...], "sentiment": ...,
+      "call_date": ..., "days_ago": ...,
+      "full_transcript": ...  # only on index 0
+    }
+  ],
+  "last_contact_days_ago": ...,  # min of most recent email sent_at and most recent call_date
+  "tasks_completed": [
+    # Last 5 completed tasks for this deal
+    { "type": ..., "title": ..., "completed_at": ... }
+  ]
+}
+```
+
+Format this as a structured text block injected at the top of every Groq system prompt:
+
+```
+DEAL CONTEXT:
+- Deal: {title} | Stage: {stage} | Amount: ${amount} | Close: {close_date}
+- Days in current stage: {days_in_stage}
+- Forecast category: {forecast_category}
+- Next step noted: {next_step}
+- Rep notes: {notes}
+
+CONTACT: {name}, {title} at {company_name} ({industry}, {employee_count} employees, {location})
+- Preferred language: {preferred_language} | Timezone: {timezone}
+- Engagement score: {activity_score}/100
+- Last contacted: {last_contact_days_ago} days ago
+
+EMAIL HISTORY (most recent first):
+1. [{days_ago}d ago] "{subject}" — {status}
+   Preview: "{body_snippet}"
+2. ...
+
+CALL HISTORY (most recent first):
+1. [{days_ago}d ago] Sentiment: {sentiment} | Topics: {key_topics}
+   Summary: {summary}
+   Full transcript: {full_transcript}
+2. [{days_ago}d ago] Sentiment: {sentiment}
+   Summary: {summary}
+
+COMPLETED ACTIONS:
+- [{completed_at}] {type}: {title}
+- ...
+```
+
+Cap total assembled context at 3000 tokens. If email history or transcript is very long, truncate body_snippet to 150 chars and use only the summary (not full transcript) for older calls. The most recent call always gets its full transcript included.
+
+This context assembly function must be a single reusable async function `assemble_deal_context(contact_id, deal_id, db)` called at the start of every AI endpoint handler.
+
+**Flows**
+- GET /flows — list all flows with step counts and enrollment counts
+- GET /flows/{id} — flow + steps detail
+- POST /flows/{id}/enroll — enroll contact + deal
+- GET /flows/{id}/enrollments — list enrollments
+- PATCH /flow_enrollments/{id}/advance — manually advance to next step
+
+**Deals**
+- GET /deals?rep_id=&stage=&forecast_category= — with contact and company joined
+- GET /deals/{id} — full deal detail with timeline of emails and tasks
+- PATCH /deals/{id} — update stage, forecast_category, amount, next_step, notes, close_date
+
+**Contacts**
+- GET /contacts — with company join
+- GET /contacts/{id} — with deal history, email history, task history
+
+**Plays**
+- GET /plays — with steps and guidelines
+- GET /plays/{id}/guidelines — guidelines for a play, grouped by stage
+
+**Forecast**
+- GET /forecast?rep_id=&period= — all deals grouped by forecast_category with totals
+- PATCH /forecast/deals/{id}/category — update forecast category
+- GET /forecast/summary?period= — team rollup per rep: commit total, best case, pipeline
+
+**Calls**
+- GET /calls?contact_id=&deal_id= — list transcripts
+- GET /calls/{id} — full transcript with summary
+- PATCH /calls/{id}/summarize — trigger AI summarization
+
+### SMTP Email Service
+In `services/email_service.py`:
+- Use `aiosmtplib` for async sending
+- Support STARTTLS (Gmail port 587)
+- Render templates: replace {{variables}} with actual values
+- Handle scheduling via APScheduler (persist scheduled jobs, load on startup)
+- On send: update email.status = 'sent', email.sent_at = now()
+- On schedule: update email.status = 'scheduled', email.scheduled_at = datetime
+
+---
+
+## FRONTEND STRUCTURE
+
+```
+frontend/
+  src/
+    main.tsx
+    App.tsx
+    store/
+      appStore.ts
+    pages/
+      Dashboard.tsx
+      TaskQueue.tsx
+      EmailComposer.tsx
+      Flows.tsx
+      FlowDetail.tsx
+      Plays.tsx
+      PlayDetail.tsx
+      ForecastBoard.tsx
+      ContactDetail.tsx
+      DealDetail.tsx
+      CallTranscripts.tsx
+      Settings.tsx
+    components/
+      layout/
+        Sidebar.tsx
+        TopBar.tsx
+      tasks/
+        TaskCard.tsx
+        TaskFilters.tsx
+        BulkActions.tsx
+      email/
+        EmailEditor.tsx
+        TemplateSelector.tsx
+        ContextPanel.tsx
+        SchedulePicker.tsx
+        LanguageSelector.tsx
+      flows/
+        FlowCard.tsx
+        StepTimeline.tsx
+        EnrollmentTable.tsx
+      forecast/
+        ForecastTable.tsx
+        DealRow.tsx
+        CategoryColumn.tsx
+      common/
+        AIGenerating.tsx
+        DealBadge.tsx
+        PriorityBadge.tsx
+        RepSelector.tsx
+    api/
+      tasks.ts
+      emails.ts
+      ai.ts
+      flows.ts
+      deals.ts
+      contacts.ts
+      plays.ts
+      forecast.ts
+      calls.ts
+    hooks/
+      useRep.ts
+      useDeals.ts
+      useContacts.ts
+```
+
+---
+
+## VISUAL DESIGN
+
+**Aesthetic:** Dark professional — deep charcoal/navy backgrounds, crisp white text, electric blue as primary accent, emerald for positive states, amber for warnings, red for alerts. Think Bloomberg Terminal meets modern SaaS.
+
+**Colors:**
+- Background: `#0F1117` (deepest), `#161B27` (sidebar), `#1C2333` (cards), `#242B3D` (elevated)
+- Text: `#F0F2F5` (primary), `#8B95A5` (secondary), `#525B6B` (muted)
+- Accent: `#3B82F6` (blue), `#60A5FA` (blue light), `#10B981` (green), `#F59E0B` (amber), `#EF4444` (red)
+- Borders: `rgba(255,255,255,0.06)` (subtle), `rgba(255,255,255,0.12)` (visible)
+
+**Typography:**
+- `'Inter'` for UI, `'JetBrains Mono'` for data/code fields
+- Import both from Google Fonts
+
+**Layout:**
+- Fixed left sidebar: 60px collapsed, 220px expanded
+- Top bar with rep selector and global search
+- Main content area: consistent 24px padding
+- Cards: `border border-white/[0.06] rounded-xl bg-[#1C2333]`
+
+**Key UI interactions:**
+- Task cards: button groups for complete/snooze/dismiss
+- AI generating: skeleton loaders with animated pulse + "✦ AI is drafting..." text
+- Forecast board: inline-editable cells, dropdown category chips
+- Email composer: split-pane (compose left, context panel right)
+- Toasts: dark style via react-hot-toast
+
+---
+
+## PAGE-BY-PAGE SPECS
+
+### 1. Dashboard (`/`)
+- Stat cards: Tasks Due Today, Emails Sent This Week, Deals in Pipeline, Forecast vs Quota
+- "Today's Focus": top 5 priority tasks
+- Pipeline snapshot: mini horizontal bar chart by stage (deal count + value)
+- Recent activity feed: last 10 emails/tasks completed
+- Quick actions: Compose Email, View All Tasks
+
+### 2. Task Queue (`/tasks`)
+- Segmented tabs: All | Email | Call | WhatsApp | Review
+- Filter bar: Priority, Due Date, Deal Stage
+- Task cards: contact name, company, deal stage, task type icon, description, due date badge, deal amount
+- Bulk select + actions bar: Complete All, Dismiss All, Snooze to Tomorrow
+- Click task → side drawer showing:
+  - Contact info + activity score
+  - Deal context (stage, amount, close date, days in stage)
+  - Last call transcript summary (most recent)
+  - For email tasks: "Open in Composer" button
+  - For WhatsApp tasks: "Generate & Open WhatsApp" button
+  - For call tasks: "Log Call" button → transcript selector modal
+  - Complete / Snooze (date picker) / Dismiss actions
+
+### 3. Email Composer (`/email/compose`)
+Split pane layout:
+
+**Left pane (60%):**
+- "To" field: contact search autocomplete
+- Deal selector (auto-populates when contact selected)
+- Subject line input
+- Toolbar: Template picker | AI Draft | Language selector
+- Textarea body editor with basic formatting (bold, italic, bullets, link)
+- AI Draft flow: show animated skeleton → populate subject + body → highlight AI text in subtle blue tint
+- If contact's preferred_language ≠ English: auto-generate both versions, show language tabs [English] [Target Language]
+- Bottom bar: "Send Now" button | "Schedule" button (opens datetime picker with recipient's local time shown)
+
+**Right pane (40%) — Context Panel:**
+- Deal info card: stage, amount, close date, probability, forecast category
+- Contact card: title, company, activity score ring, timezone, preferred language
+- "Call Transcripts" section: list all transcripts for this contact, sorted newest first
+  - Each shows: date, sentiment badge, key topics, summary preview
+  - "Use in Draft" button on each — injects that transcript's context into the next AI draft call
+- Email thread: prior emails for this deal, chronological, with status icons (sent/opened/replied)
+- Note: the right pane is purely display — the actual context injection happens server-side via the context assembly function
+
+### 4. Flows (`/flows`)
+- Flow cards grid: name, trigger type, active enrollments, step count, status badge (active/paused/draft)
+- Filter by play / status
+- Each card: "View Details" | "Pause/Activate" toggle | "Enroll Contact" button
+- "Enroll Contact" → modal: search contact, select deal, confirm → POST /flows/{id}/enroll
+
+**Flow Detail (`/flows/:id`):**
+- Vertical step timeline: each step shows day number, channel icon, subject/action preview, delay badge
+- Channel icons: 📧 Email, 📱 WhatsApp, 📞 Call, ✅ Task
+- Enrollments table: contact, company, deal, current step, status, next action date
+- Per enrollment: "Advance Step" button, "Exit Flow" button
+
+### 5. Plays (`/plays`)
+- Play cards: name, type badge, step count, duration, target stages
+
+**Play Detail (`/plays/:id`):**
+- Play overview header with description
+- "AI Guidelines" section, organized by deal stage:
+  - If guidelines exist: show as coaching cards — headline action + 3 bullet points
+  - If none exist: "Generate Guidelines" button → POST /ai/generate-guidelines → renders result
+- Associated Flows list
+- Enrolled deals grouped by stage
+
+### 6. Forecast Board (`/forecast`)
+- Period selector: Q1/Q2/Q3/Q4 + Year dropdown
+- Rep selector (default: active rep)
+- Spreadsheet table:
+  - Columns: Deal Name | Contact | Company | Stage | Close Date | Amount | Forecast Category | Rep Override
+  - Inline editable: Forecast Category (dropdown), Rep Override (number input on click)
+  - Row colors: Commit (green tint), Best Case (blue tint), Pipeline (neutral), Omit (muted + strikethrough)
+  - Sortable columns
+- Sticky footer row: Commit Total | Best Case Total | Pipeline Total | Quota | % Attainment
+- Team Rollup section below: one row per rep, same columns, subtotals only
+
+### 7. Call Transcripts (`/calls`)
+- List: contact name, deal, date, duration, sentiment badge, summary preview
+- Click → full transcript modal:
+  - Metadata: date, duration, language, sentiment, key topics as chips
+  - AI-generated summary block
+  - Full scrollable transcript with speaker labels and timestamps
+  - "Draft Follow-up Email" button → navigates to composer with this contact/deal/transcript pre-selected
+
+### 8. Contact Detail (`/contacts/:id`)
+- Header: name, title, company, activity score ring
+- Tabs: Overview | Emails | Deals | Tasks | Calls
+- Overview: timezone, language, phone, WhatsApp link (click opens wa.me)
+- Emails: chronological thread view with status icons
+- Deals: deal cards with stage + amount
+- Tasks: upcoming and completed
+- Calls: transcript list with sentiment badges
+
+### 9. Deal Detail (`/deals/:id`)
+- Header: title, amount, stage badge, probability, close date, forecast category chip
+- Editable fields: stage (dropdown), forecast category, next step, notes, close date — auto-save on blur
+- Timeline: all emails, tasks, calls chronologically (newest first), with type icons
+- "Add Task" button (modal)
+- "Compose Email" shortcut (pre-fills contact + deal)
+- "Enroll in Flow" button → flow selector modal
+
+### 10. Settings (`/settings`)
+- SMTP config: host, port, username, password (masked input), from name — "Save" + "Send Test Email" buttons
+- Groq API key field (masked)
+- Active rep selector (POC mode — stored in Zustand + localStorage)
+- Connection status indicators: Supabase (green/red), Groq (green/red), SMTP (green/red)
+
+---
+
+## WHATSAPP INTEGRATION (replacing LinkedIn)
+
+For any task or action of type `whatsapp`:
+1. User clicks "Generate WhatsApp Message" on a task or in the composer
+2. Frontend calls POST /ai/whatsapp-message with contact_id, deal_id, intent
+3. Backend assembles full deal context (same context assembly function), passes to Groq
+4. Groq generates a concise conversational WhatsApp message (max 150 words, warm tone, no formal salutations)
+5. Backend returns: `{message: "...", whatsapp_url: "https://wa.me/+{e164_number}?text={url_encoded_message}"}`
+6. Frontend shows message preview with "Open WhatsApp" button → opens wa.me in new tab
+7. User sends manually in WhatsApp Web/App
+8. Frontend marks task as completed (optimistic)
+
+WhatsApp number must be stored in E.164 format in the contacts table (+country_code + number, no spaces or dashes).
+
+---
+
+## CALL TRANSCRIPTS (Demo Mode)
+
+- 10 pre-seeded transcripts in the DB from seed.py
+- Call Transcripts page lists all, click to view full
+- "Simulate New Call" button → modal:
+  - Select contact and deal
+  - Shows a randomly selected demo transcript scenario
+  - "Save Call" → inserts to DB, auto-creates a follow-up email task for the rep
+- In the Email Composer context panel, all transcripts for the contact are listed
+- Clicking "Use in Draft" on a transcript sets transcript_id on the next AI draft request
+- The context assembly function always fetches all transcripts for the contact — "Use in Draft" only prioritizes which one gets its full text included at the top
+
+---
+
+## KEY USER JOURNEYS
+
+### Journey 1: Morning Task Processing
+1. Dashboard shows 12 tasks due today
+2. Task Queue → sorted by priority, email tasks at top
+3. Click email task → drawer opens with deal context + recent call summary (from context assembly)
+4. "Open in Composer" → composer pre-fills contact and deal
+5. "AI Draft" → Groq drafts using full assembled context (email history, call transcripts, deal stage, days since last contact)
+6. Rep reviews, edits subject line, schedules for 9am in prospect's timezone
+7. Back to task queue → mark complete
+
+### Journey 2: Flow Enrollment After Demo
+1. Rep completes a call → marks call task complete, saves transcript
+2. From Deal Detail → "Enroll in Post-Demo Nurture" flow
+3. System creates tasks for each flow step with delays (day 1, 3, 7, 14)
+4. Tasks appear in Task Queue for future dates
+
+### Journey 3: Multi-language Outreach
+1. Composer opened for a Spanish-preferred contact
+2. AI Draft clicked → backend detects preferred_language = 'Spanish'
+3. Groq generates both English and Spanish versions in one call
+4. Language tabs appear: [English] [Español]
+5. Rep reviews Spanish version → sends
+
+### Journey 4: Forecast Update
+1. Forecast Board for Q2 2025
+2. Deal "CloudNova Enterprise" is in Pipeline
+3. Rep changes category dropdown → Commit
+4. Override amount field appears → enters $185,000
+5. Footer totals update instantly (optimistic UI)
+6. Team rollup row updates
+
+---
+
+## IMPORTANT IMPLEMENTATION NOTES
+
+1. **Active rep** — Settings page has rep selector. Store active rep ID in Zustand + localStorage. All API calls include rep_id query param or request body field.
+
+2. **Context assembly is mandatory** — Every single AI endpoint must call `assemble_deal_context()` before building the Groq prompt. No AI call should go to Groq without full deal + contact + history context.
+
+3. **SMTP Test Connection** — Settings "Send Test Email" button must send a real email to the rep's own email address and show success/failure toast.
+
+4. **AI Loading States** — All Groq calls show a distinct loading state: animated pulsing "✦ AI is drafting..." indicator. Not a generic spinner.
+
+5. **Email → Task sync** — When an email is sent (status set to 'sent'), automatically mark the linked task (if any) as 'completed'.
+
+6. **WhatsApp E.164 format** — Seed contacts with properly formatted whatsapp_number values. wa.me links break without correct format.
+
+7. **Forecast real-time totals** — Commit/Best Case/Pipeline totals recompute client-side instantly on category change (optimistic), confirmed after server response.
+
+8. **APScheduler startup** — On FastAPI startup, query all emails where status='scheduled' AND scheduled_at > NOW(), register each as an APScheduler job. On execution, call the SMTP send function and update status to 'sent'.
+
+9. **CORS** — `allow_origins=["*"]` in development.
+
+10. **Error handling** — All API errors surface as react-hot-toast notifications. SMTP failures must include the specific error reason (auth failed, timeout, etc.).
+
+11. **Seed idempotency** — Check existence before inserting. Print a full summary table of counts inserted per entity type.
+
+12. **days_in_stage computation** — Compute as `(NOW() - deals.updated_at).days` in the context assembly function. Include in every deal context block passed to Groq.
+
+---
+
+## DELIVERABLES
+
+1. Full working backend: all routers, services, context assembly, seed script
+2. Full working frontend: all pages and components
+3. `README.md` with:
+   - Supabase setup (SQL to run, service key location)
+   - Gmail App Password setup steps
+   - How to run seed script
+   - How to start backend + frontend
+   - Feature walkthrough with screenshots or descriptions
+
+Build and verify the backend fully first (test all endpoints via `/docs`), then build the frontend against it.
+```

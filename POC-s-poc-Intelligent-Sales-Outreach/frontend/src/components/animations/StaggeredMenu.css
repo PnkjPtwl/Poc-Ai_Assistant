@@ -1,0 +1,276 @@
+/* ─── Wrapper ─────────────────────────────────────────── */
+.staggered-menu-wrapper {
+  position: relative;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.staggered-menu-wrapper.fixed-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 55;
+  overflow: hidden;
+}
+
+/* ─── Header (TopBar) — Vantage Light ────────────────── */
+.staggered-menu-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(199, 196, 215, 0.5);
+  pointer-events: auto;
+  z-index: 62;
+}
+
+.sm-header-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ─── Toggle Button ───────────────────────────────────── */
+.sm-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(70, 72, 212, 0.06);
+  border: 1px solid rgba(70, 72, 212, 0.15);
+  padding: 0.4rem 0.85rem;
+  border-radius: 99px;
+  cursor: pointer;
+  color: #111c2d;
+  font-weight: 600;
+  font-size: 0.8rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.sm-toggle:hover {
+  background: rgba(70, 72, 212, 0.1);
+  border-color: rgba(70, 72, 212, 0.3);
+}
+
+.sm-toggle-textWrap {
+  position: relative;
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sm-toggle-textInner {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.sm-toggle-line {
+  display: block;
+  height: 1em;
+  line-height: 1;
+}
+
+.sm-icon {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  flex: 0 0 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+}
+
+.sm-icon-line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+.sm-icon-line-v {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* ─── Pre-layers — Light Glassmorphic ────────────────── */
+.sm-prelayers {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  bottom: 0;
+  width: 300px;
+  pointer-events: none;
+  z-index: 57;
+  opacity: 0;
+}
+
+.sm-prelayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+}
+
+/* ─── Panel — Light Theme ────────────────────────────── */
+.staggered-menu-panel {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 300px;
+  height: calc(100% - 64px);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-right: 1px solid rgba(199, 196, 215, 0.5);
+  display: flex;
+  flex-direction: column;
+  padding: 2.5em 2em 3em 2em;
+  overflow-y: auto;
+  z-index: 58;
+  pointer-events: auto;
+  opacity: 0;
+  box-shadow: 10px 0 40px rgba(15, 23, 42, 0.08);
+}
+
+/* ─── Panel Content ──────────────────────────────────── */
+.sm-panel-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sm-panel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  counter-reset: smItem;
+}
+
+.sm-panel-itemWrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.sm-panel-item {
+  position: relative;
+  color: #464554;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1.3;
+  letter-spacing: 0;
+  text-transform: none;
+  transition: color 0.2s ease, background 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.sm-panel-item:hover {
+  color: #4648d4;
+  background: rgba(70, 72, 212, 0.06);
+}
+
+.sm-panel-itemLabel {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Numbering */
+.sm-panel-list[data-numbering] .sm-panel-item::before {
+  counter-increment: smItem;
+  content: counter(smItem, decimal-leading-zero);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--sm-accent, #4648d4);
+  opacity: var(--sm-num-opacity, 0);
+  transition: opacity 0.3s ease;
+  flex-shrink: 0;
+  width: 22px;
+}
+
+/* ─── Socials ────────────────────────────────────────── */
+.sm-socials {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(199, 196, 215, 0.4);
+}
+
+.sm-socials-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #767586;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sm-socials-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.sm-socials-link {
+  font-size: 0.8rem;
+  color: #464554;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sm-socials-link:hover {
+  color: #4648d4;
+}
+
+/* ─── Logo ───────────────────────────────────────────── */
+.sm-logo {
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.sm-logo-img {
+  display: block;
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ─── Mobile ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .staggered-menu-panel {
+    width: 260px;
+  }
+}

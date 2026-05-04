@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Profile - Vantage Executive Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed": "#ffe088",
+                      "surface-container": "#edeeef",
+                      "secondary-container": "#fed65b",
+                      "inverse-surface": "#2e3132",
+                      "surface-variant": "#e1e3e4",
+                      "primary-fixed": "#b0f0d6",
+                      "on-secondary-fixed": "#241a00",
+                      "surface": "#f8f9fa",
+                      "surface-container-low": "#f3f4f5",
+                      "surface-container-highest": "#e1e3e4",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed": "#002113",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "background": "#f8f9fa",
+                      "on-surface-variant": "#404944",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-container": "#745c00",
+                      "surface-bright": "#f8f9fa",
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#95d3ba",
+                      "surface-container-high": "#e7e8e9",
+                      "surface-container-lowest": "#ffffff",
+                      "outline": "#707974",
+                      "on-tertiary-container": "#31c98f",
+                      "surface-tint": "#2b6954",
+                      "inverse-on-surface": "#f0f1f2",
+                      "on-secondary": "#ffffff",
+                      "on-background": "#191c1d",
+                      "outline-variant": "#bfc9c3",
+                      "error-container": "#ffdad6",
+                      "surface-dim": "#d9dadb",
+                      "on-primary-container": "#80bea6",
+                      "on-primary-fixed-variant": "#0b513d",
+                      "secondary": "#735c00",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "primary-fixed-dim": "#95d3ba",
+                      "secondary-fixed-dim": "#e9c349",
+                      "on-surface": "#191c1d",
+                      "on-secondary-fixed-variant": "#574500",
+                      "primary-container": "#064e3b",
+                      "primary": "#003527",
+                      "tertiary-container": "#004f34",
+                      "tertiary": "#003623",
+                      "tertiary-fixed": "#6ffbbe",
+                      "on-primary-fixed": "#002117",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "48px",
+                      "unit": "4px",
+                      "sm": "8px",
+                      "xs": "4px",
+                      "margin": "32px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "xxl": "80px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "h3": [
+                              "Inter"
+                      ],
+                      "h1": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "h2": [
+                              "Inter"
+                      ],
+                      "display": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "button": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "h3": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h1": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.03em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h2": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "button": [
+                              "15px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- TopAppBar JSON Component -->
+<header class="fixed top-0 w-full border-b border-emerald-900/5 bg-white/80 dark:bg-emerald-950/80 backdrop-blur-md shadow-[0_20px_40px_rgba(6,78,59,0.08)] flex justify-between items-center px-8 h-20 w-full z-50 transition-all duration-300 ease-in-out hidden md:flex">
+<div class="flex items-center gap-xl">
+<div class="text-xl font-bold tracking-tighter text-emerald-900 dark:text-emerald-50">Vantage</div>
+<nav class="flex items-center gap-lg h-full">
+<a class="font-inter tracking-tight text-emerald-900/60 dark:text-emerald-50/60 hover:text-emerald-900 dark:hover:text-amber-400 transition-colors duration-300 ease-in-out flex items-center h-full" href="#">Pipeline</a>
+<a class="font-inter tracking-tight text-emerald-900/60 dark:text-emerald-50/60 hover:text-emerald-900 dark:hover:text-amber-400 transition-colors duration-300 ease-in-out flex items-center h-full" href="#">Accounts</a>
+<a class="font-inter tracking-tight text-emerald-900/60 dark:text-emerald-50/60 hover:text-emerald-900 dark:hover:text-amber-400 transition-colors duration-300 ease-in-out flex items-center h-full" href="#">Analytics</a>
+<a class="font-inter tracking-tight text-emerald-900/60 dark:text-emerald-50/60 hover:text-emerald-900 dark:hover:text-amber-400 transition-colors duration-300 ease-in-out flex items-center h-full" href="#">Strategy</a>
+</nav>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="bg-surface-container-low border-none rounded-DEFAULT pl-10 pr-4 py-2 focus:ring-1 focus:ring-secondary-fixed focus:outline-none w-64 text-body-sm font-body-sm text-on-surface placeholder:text-outline transition-all duration-300" placeholder="Search..." type="text"/>
+</div>
+<button class="bg-primary text-on-primary font-button text-button px-6 py-2.5 rounded-DEFAULT hover:bg-primary-container transition-colors duration-300">Close Deal</button>
+<div class="flex items-center gap-sm">
+<button class="p-2 text-emerald-900/60 dark:text-emerald-50/60 hover:text-emerald-900 dark:hover:text-amber-400 transition-colors duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="p-2 text-emerald-900 dark:text-emerald-50 border-b-2 border-amber-400 pb-1 hover:text-emerald-900 dark:hover:text-amber-400 transition-colors duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+</button>
+</div>
+<div class="h-10 w-10 rounded-full overflow-hidden border border-surface-variant">
+<img alt="Executive Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a confident executive in a tailored dark suit. The lighting is crisp and modern studio lighting, casting soft shadows that highlight a commanding presence. The background is a clean, out-of-focus executive office setting with subtle hints of emerald green and brushed gold accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEp2l0hr7nC0F2CphUfylCNoMKmZQQkTnP4k4d31R0KmuDguhGU6Q-jiRhMYrtfZmlBaMMcrxpPCyRot-aGFgAH4DnlnaA2bGObeZyW3kKM_DDIcCmRYqUwyoezTeKWWZeBfvaQnzzDSgKUTOvettBK0UZkcdroUxFAGKppqJTg9n0eTqRgCBllehd8F6Pdcix-lJzvzMSs2DBbViaNhVFNR9aaG4WRk_swmCsuc_3RZw_NmnKkrIx2cRddO2QpIs6fyvY50f3vg"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar JSON Component -->
+<aside class="fixed left-0 top-0 h-full w-64 border-r border-emerald-900/5 bg-white/90 dark:bg-emerald-950/90 backdrop-blur-xl shadow-2xl flex flex-col h-full pt-24 pb-8 transition-all duration-200 z-40 hidden md:flex">
+<div class="px-lg mb-xl">
+<div class="flex items-center gap-md mb-xs">
+<div class="h-12 w-12 rounded-full overflow-hidden border border-surface-variant">
+<img alt="Executive User" class="w-full h-full object-cover" data-alt="A professional headshot of a confident executive in a tailored dark suit. The lighting is crisp and modern studio lighting, casting soft shadows that highlight a commanding presence. The background is a clean, out-of-focus executive office setting with subtle hints of emerald green and brushed gold accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhLz1dXTm9bB0bjUjSpnRPytLapBGXN_TjG5HqavhOHX-GY_8cESFXyDgGEMyEHIVfSs1pjkYrMXfB7LNWIS708--P9Gf2f6lGXrTJ5raLCDpgOOpJ7yFrrw5xNE44DFWajwUIg_LjRMO6cLbIzf6-q0ZIebLZtuyw4N5d-ioPUoCKEKGZlJDk4fyfpa22dMgY2O5du3wVIC-Duae1_Yt8Gjn6uH_Akp_aqGN-r7A9s5KI98_jILVz848G_i6zQt87IBTOuo4P8Q"/>
+</div>
+<div>
+<div class="font-h3 text-h3 text-emerald-900 dark:text-emerald-50">Executive Suite</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">High-Performance Mode</div>
+</div>
+</div>
+</div>
+<div class="px-lg mb-lg">
+<button class="w-full bg-secondary-container text-on-secondary-container font-button text-button py-3 rounded-DEFAULT hover:bg-secondary-fixed transition-colors duration-200 flex justify-center items-center gap-sm shadow-sm">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">add</span>
+                New Opportunity
+            </button>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<a class="flex items-center gap-md px-md py-3 rounded-DEFAULT text-emerald-900/40 dark:text-emerald-50/40 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all duration-200 font-inter uppercase tracking-widest text-[10px] font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-md px-md py-3 rounded-DEFAULT text-emerald-900/40 dark:text-emerald-50/40 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all duration-200 font-inter uppercase tracking-widest text-[10px] font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">monitoring</span>
+                Performance
+            </a>
+<a class="flex items-center gap-md px-md py-3 rounded-DEFAULT text-emerald-900/40 dark:text-emerald-50/40 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all duration-200 font-inter uppercase tracking-widest text-[10px] font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">group</span>
+                Team
+            </a>
+<a class="flex items-center gap-md px-md py-3 rounded-DEFAULT text-emerald-900/40 dark:text-emerald-50/40 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all duration-200 font-inter uppercase tracking-widest text-[10px] font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu_book</span>
+                Library
+            </a>
+<a class="flex items-center gap-md px-md py-3 rounded-DEFAULT text-emerald-900/40 dark:text-emerald-50/40 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all duration-200 font-inter uppercase tracking-widest text-[10px] font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help_center</span>
+                Support
+            </a>
+</nav>
+<div class="px-sm mt-auto space-y-1">
+<a class="flex items-center gap-md px-md py-3 rounded-DEFAULT text-emerald-900 dark:text-amber-400 bg-emerald-50/50 dark:bg-emerald-900/50 border-r-4 border-amber-400 transition-all duration-200 font-inter uppercase tracking-widest text-[10px] font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-md px-md py-3 rounded-DEFAULT text-emerald-900/40 dark:text-emerald-50/40 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all duration-200 font-inter uppercase tracking-widest text-[10px] font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-24 md:pl-64 min-h-screen bg-background px-lg md:px-margin pb-xxl">
+<div class="max-w-6xl mx-auto">
+<!-- Page Header -->
+<div class="mb-xl flex items-end justify-between">
+<div>
+<h1 class="font-h1 text-h1 text-on-background mb-xs">Profile &amp; Settings</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Manage your executive workspace preferences and identity.</p>
+</div>
+<div class="hidden md:block">
+<button class="bg-primary text-on-primary font-button text-button px-6 py-3 rounded-DEFAULT hover:bg-primary-container transition-colors duration-300 shadow-sm">Save Changes</button>
+</div>
+</div>
+<!-- Settings Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column (Nav/Quick Links - optional for smaller screens) -->
+<div class="lg:col-span-3 hidden lg:block">
+<div class="sticky top-32 space-y-2">
+<a class="block py-2 px-4 border-l-2 border-secondary-fixed text-primary font-body-md text-body-md font-semibold bg-surface-container-low rounded-r-DEFAULT" href="#personal-info">Personal Info</a>
+<a class="block py-2 px-4 border-l-2 border-transparent text-on-surface-variant hover:text-primary hover:bg-surface-container-low hover:border-surface-variant transition-all font-body-md text-body-md rounded-r-DEFAULT" href="#notifications">Notifications</a>
+<a class="block py-2 px-4 border-l-2 border-transparent text-on-surface-variant hover:text-primary hover:bg-surface-container-low hover:border-surface-variant transition-all font-body-md text-body-md rounded-r-DEFAULT" href="#workspace-theme">Workspace Theme</a>
+<a class="block py-2 px-4 border-l-2 border-transparent text-on-surface-variant hover:text-primary hover:bg-surface-container-low hover:border-surface-variant transition-all font-body-md text-body-md rounded-r-DEFAULT" href="#security">Security</a>
+</div>
+</div>
+<!-- Right Column (Settings Content) -->
+<div class="lg:col-span-9 space-y-xl">
+<!-- Personal Info Section -->
+<section class="scroll-mt-32" id="personal-info">
+<div class="bg-surface/80 backdrop-blur-md rounded-xl border border-surface-container shadow-[0_4px_20px_rgba(6,78,59,0.03)] p-lg">
+<h2 class="font-h2 text-h2 text-on-background mb-md pb-sm border-b border-surface-variant">Personal Information</h2>
+<div class="flex flex-col md:flex-row gap-xl items-start">
+<!-- Avatar Upload -->
+<div class="flex flex-col items-center gap-sm shrink-0">
+<div class="relative h-32 w-32 rounded-full overflow-hidden border-2 border-surface-container group cursor-pointer">
+<img alt="Executive Profile Large" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A high-resolution, professional portrait of a senior executive. The subject is wearing a sharply tailored dark navy suit with a crisp white shirt. The background is a sophisticated, softly blurred corporate boardroom with high-end wood paneling and subtle emerald green accents. The lighting is cinematic and flattering, conveying authority and calm confidence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR3XNWVMBjdCOpNhCfE-pkvx8-Og7wT5IOmGRptqDWDWnnuNkcSvtUS17yYrsyAWYpdODlh9m1j6Ii8ypqS2YTdEaYwwbybf9m9aZTMOAhsUnVhM0wEsJO8zoe8lhgQP_PIHCPmFM9KhKLUaykhkFbFNPFY4vP8Vse2cK-nHVoedLclODOXlREkjOJ84ktQF708pR24qhnSLja1Ic2ZQoTO-Z5Ftvy4mq1d9CrFTF0cqYXxq_hrkKjVTnk_aRVwPkiWtOqljv_Hw"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</div>
+</div>
+<button class="font-label-caps text-label-caps text-primary hover:text-primary-container transition-colors">Update Photo</button>
+</div>
+<!-- Form Fields -->
+<div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-lg w-full">
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block">First Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-2.5 focus:ring-1 focus:ring-secondary-fixed focus:outline-none text-body-md font-body-md text-on-surface transition-all" type="text" value="Alexander"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block">Last Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-2.5 focus:ring-1 focus:ring-secondary-fixed focus:outline-none text-body-md font-body-md text-on-surface transition-all" type="text" value="Sterling"/>
+</div>
+<div class="space-y-xs md:col-span-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant block">Professional Title</label>
+<input class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-2.5 focus:ring-1 focus:ring-secondary-fixed focus:outline-none text-body-md font-body-md text-on-surface transition-all" type="text" value="VP of Global Sales"/>
+</div>
+<div class="space-y-xs md:col-span-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant block">Email Address</label>
+<input class="w-full bg-surface-container-low border-none rounded-DEFAULT px-4 py-2.5 focus:ring-1 focus:ring-secondary-fixed focus:outline-none text-body-md font-body-md text-on-surface transition-all" type="email" value="a.sterling@vantage.corp"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Notifications Section -->
+<section class="scroll-mt-32" id="notifications">
+<div class="bg-surface/80 backdrop-blur-md rounded-xl border border-surface-container shadow-[0_4px_20px_rgba(6,78,59,0.03)] p-lg">
+<h2 class="font-h2 text-h2 text-on-background mb-md pb-sm border-b border-surface-variant">Notification Preferences</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg">Control the flow of information to maintain peak focus.</p>
+<div class="space-y-6">
+<!-- Toggle Item -->
+<div class="flex items-center justify-between">
+<div>
+<div class="font-h3 text-h3 text-on-background">High-Value Deal Alerts</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Immediate notification for deals moving to closing stage.</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-surface-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="w-full h-px bg-surface-container"></div>
+<!-- Toggle Item -->
+<div class="flex items-center justify-between">
+<div>
+<div class="font-h3 text-h3 text-on-background">Daily Executive Briefing</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">A summarized email of pipeline health at 7:00 AM.</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-surface-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="w-full h-px bg-surface-container"></div>
+<!-- Toggle Item -->
+<div class="flex items-center justify-between">
+<div>
+<div class="font-h3 text-h3 text-on-background">Team Performance Digest</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Weekly aggregate of team metrics and KPIs.</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-surface-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Workspace Theme Section -->
+<section class="scroll-mt-32" id="workspace-theme">
+<div class="bg-surface/80 backdrop-blur-md rounded-xl border border-surface-container shadow-[0_4px_20px_rgba(6,78,59,0.03)] p-lg">
+<h2 class="font-h2 text-h2 text-on-background mb-md pb-sm border-b border-surface-variant">Workspace Theme</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Theme Option: Light -->
+<div class="border-2 border-secondary-fixed rounded-lg p-sm cursor-pointer bg-surface relative">
+<div class="absolute top-sm right-sm text-secondary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="h-32 bg-white rounded-DEFAULT border border-surface-container mb-sm flex flex-col p-2 shadow-sm">
+<div class="h-4 w-full border-b border-surface-container mb-2 flex items-center px-1">
+<div class="h-2 w-8 bg-surface-variant rounded-full"></div>
+</div>
+<div class="flex flex-1 gap-2">
+<div class="w-8 h-full bg-surface-container-low rounded-sm"></div>
+<div class="flex-1 bg-surface-container-lowest rounded-sm border border-surface-container p-2">
+<div class="h-2 w-1/2 bg-surface-variant rounded-full mb-1"></div>
+<div class="h-2 w-1/3 bg-surface-variant rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="font-h3 text-h3 text-center text-on-background">Executive Light</div>
+</div>
+<!-- Theme Option: Dark -->
+<div class="border border-surface-variant hover:border-outline transition-colors rounded-lg p-sm cursor-pointer bg-surface">
+<div class="h-32 bg-inverse-surface rounded-DEFAULT border border-outline mb-sm flex flex-col p-2 shadow-sm">
+<div class="h-4 w-full border-b border-outline mb-2 flex items-center px-1">
+<div class="h-2 w-8 bg-surface-variant rounded-full"></div>
+</div>
+<div class="flex flex-1 gap-2">
+<div class="w-8 h-full bg-[#1a1c1d] rounded-sm"></div>
+<div class="flex-1 bg-[#1a1c1d] rounded-sm border border-outline p-2">
+<div class="h-2 w-1/2 bg-surface-variant rounded-full mb-1"></div>
+<div class="h-2 w-1/3 bg-surface-variant rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="font-h3 text-h3 text-center text-on-background">Midnight Studio</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Mobile Save Button -->
+<div class="md:hidden pt-lg">
+<button class="w-full bg-primary text-on-primary font-button text-button px-6 py-3 rounded-DEFAULT hover:bg-primary-container transition-colors duration-300 shadow-sm">Save Changes</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

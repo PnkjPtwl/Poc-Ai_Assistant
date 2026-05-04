@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-surface-variant": "#404944",
+                    "secondary-container": "#fed65b",
+                    "primary": "#003527",
+                    "tertiary-container": "#004f34",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface-tint": "#2b6954",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary": "#735c00",
+                    "surface-bright": "#f8f9fa",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#d9dadb",
+                    "inverse-primary": "#95d3ba",
+                    "surface-variant": "#e1e3e4",
+                    "surface-container-low": "#f3f4f5",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#002113",
+                    "on-secondary-fixed-variant": "#574500",
+                    "inverse-surface": "#2e3132",
+                    "on-primary-container": "#80bea6",
+                    "primary-fixed": "#b0f0d6",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#241a00",
+                    "outline": "#707974",
+                    "outline-variant": "#bfc9c3",
+                    "surface-container-high": "#e7e8e9",
+                    "on-tertiary-container": "#31c98f",
+                    "secondary-fixed-dim": "#e9c349",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#95d3ba",
+                    "secondary-fixed": "#ffe088",
+                    "on-surface": "#191c1d",
+                    "on-primary-fixed": "#002117",
+                    "surface-container": "#edeeef",
+                    "tertiary": "#003623",
+                    "on-background": "#191c1d",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "on-secondary-container": "#745c00",
+                    "background": "#f8f9fa",
+                    "on-primary-fixed-variant": "#0b513d",
+                    "primary-container": "#064e3b",
+                    "surface": "#f8f9fa",
+                    "tertiary-fixed": "#6ffbbe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "48px",
+                    "gutter": "24px",
+                    "margin": "32px",
+                    "lg": "24px",
+                    "xxl": "80px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "h2": ["Inter"],
+                    "body-md": ["Inter"],
+                    "h3": ["Inter"],
+                    "display": ["Inter"],
+                    "button": ["Inter"],
+                    "h1": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 bg-white/80 dark:bg-emerald-950/80 backdrop-blur-lg flex flex-col p-4 space-y-6 border-r border-emerald-900/5 shadow-2xl shadow-emerald-900/10 sticky top-0 shrink-0">
+<div class="flex items-center space-x-3 px-2">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">panorama_vertical</span>
+</div>
+<div>
+<h2 class="font-inter text-xl font-black text-emerald-900">Vantage</h2>
+<p class="text-[10px] font-label-caps tracking-widest text-on-surface-variant uppercase">Premium Workspace</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center space-y-0 px-4 py-3 bg-emerald-900 text-white rounded-lg shadow-lg shadow-emerald-900/20 group transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Dashboard</span>
+</a>
+<a class="flex items-center space-y-0 px-4 py-3 text-emerald-800/70 hover:bg-emerald-50 rounded-lg transition-all duration-300 hover:translate-x-1 group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="analytics">analytics</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Pipeline</span>
+</a>
+<a class="flex items-center space-y-0 px-4 py-3 text-emerald-800/70 hover:bg-emerald-50 rounded-lg transition-all duration-300 hover:translate-x-1 group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="checklist">checklist</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Tasks</span>
+</a>
+<a class="flex items-center space-y-0 px-4 py-3 text-emerald-800/70 hover:bg-emerald-50 rounded-lg transition-all duration-300 hover:translate-x-1 group" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="group">group</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Contacts</span>
+</a>
+</nav>
+<div class="pt-6 border-t border-emerald-900/5 space-y-2">
+<a class="flex items-center px-4 py-2 text-emerald-800/70 hover:text-emerald-900 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help">help</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Support</span>
+</a>
+<a class="flex items-center px-4 py-2 text-emerald-800/70 hover:text-emerald-900 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="person">person</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Account</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0">
+<!-- Top Navigation -->
+<header class="w-full sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-emerald-900/5 shadow-[0_20px_40px_rgba(6,78,59,0.08)] flex justify-between items-center px-6 py-4">
+<div class="flex items-center space-x-4">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full min-w-[320px]">
+<span class="material-symbols-outlined text-outline mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full" placeholder="Search accounts, deals, or tasks..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="p-2 hover:bg-emerald-50/50 transition-colors rounded-full text-emerald-900 active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 hover:bg-emerald-50/50 transition-colors rounded-full text-emerald-900 active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-emerald-900/10">
+<img alt="Executive Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a senior executive in a high-end, minimalist office setting. The lighting is soft and cinematic, casting gentle shadows that emphasize a confident yet approachable demeanor. The background is slightly blurred, featuring clean lines and a hint of a modern city skyline. The color palette consists of neutral tones, deep emerald accents, and a warm gold glow." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxt22kKj0-by31_46ExYlZffj8HrGfTj0WVmATHhTCRdm1LzQQg0UQaatPkiMDfeP2wYxcs0ipdME_s2_KQqqxzZkAyTWTTtmkuKWH16LAtcWKEfZCuBfEs008H_fsHwrNfdY6HCo3GW_Lo28a9OKFVv7N9QbzZ3ShV_UGNliLIzYl9X5nWLocL2oIblYdEGT-LVqxcAIsGXrRizh7vRI3P6Rz6hrJLq9PCLBkhf5KW0gIavAUlkY91jEtRajyjJZUBDqTorRBTA"/>
+</div>
+</div>
+</header>
+<!-- Deal Header -->
+<section class="px-margin pt-margin pb-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div class="space-y-sm">
+<nav class="flex items-center space-x-2 text-on-surface-variant font-label-caps">
+<span>Pipeline</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span>Enterprise Accounts</span>
+</nav>
+<h1 class="font-h1 text-h1 text-primary tracking-tight">Global Expansion - Acme Corp</h1>
+<div class="flex items-center space-x-gutter mt-sm">
+<div class="flex items-center space-x-xs">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-display text-h2 text-primary tracking-tight">$120,000</span>
+</div>
+<div class="px-md py-xs bg-secondary-container text-on-secondary-container rounded-full font-button text-button">
+                            Proposal Stage
+                        </div>
+</div>
+</div>
+<div class="flex items-center space-x-md">
+<button class="px-lg py-md border border-secondary text-secondary rounded-xl font-button text-button hover:bg-secondary/5 transition-all">
+                        Edit Deal
+                    </button>
+<button class="px-lg py-md bg-secondary text-primary rounded-xl font-button text-button shadow-lg shadow-secondary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                        Close Deal
+                    </button>
+</div>
+</div>
+<!-- Pipeline Ribbon -->
+<div class="mt-xl glass-panel p-xs rounded-full flex items-center justify-between shadow-sm overflow-hidden border border-emerald-900/5">
+<div class="flex-1 px-md py-3 text-center text-label-caps text-on-surface-variant relative">
+                    Discovery
+                    <div class="absolute bottom-0 left-0 w-full h-1 bg-primary/20"></div>
+</div>
+<div class="flex-1 px-md py-3 text-center text-label-caps text-on-surface-variant relative">
+                    Qualification
+                    <div class="absolute bottom-0 left-0 w-full h-1 bg-primary/20"></div>
+</div>
+<div class="flex-1 px-md py-3 text-center text-label-caps text-primary font-bold relative">
+                    Proposal
+                    <div class="absolute bottom-0 left-0 w-full h-1 bg-secondary shadow-[0_-4px_12px_rgba(254,214,91,0.5)]"></div>
+</div>
+<div class="flex-1 px-md py-3 text-center text-label-caps text-on-surface-variant/40">
+                    Negotiation
+                </div>
+<div class="flex-1 px-md py-3 text-center text-label-caps text-on-surface-variant/40">
+                    Closing
+                </div>
+</div>
+</section>
+<!-- Main Workspace Grid -->
+<div class="flex-1 px-margin pb-xxl grid grid-cols-12 gap-gutter items-start">
+<!-- Left Column: Core Workflow -->
+<div class="col-span-12 lg:col-span-8 space-y-gutter">
+<!-- AI Insights Section -->
+<div class="glass-panel p-lg rounded-xl shadow-lg shadow-emerald-900/5 border-l-4 border-l-secondary relative overflow-hidden group">
+<div class="absolute -right-12 -top-12 w-48 h-48 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-all"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="flex items-center space-x-md">
+<div class="w-12 h-12 bg-primary text-secondary rounded-lg flex items-center justify-center shadow-inner">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<p class="font-label-caps text-secondary uppercase tracking-widest">Vantage Insights</p>
+<h3 class="font-h3 text-h3 text-primary">Strategic Advantage Identified</h3>
+</div>
+</div>
+<div class="text-right">
+<span class="font-display text-h3 text-secondary">+24%</span>
+<p class="font-label-caps text-on-surface-variant">Close Probability</p>
+</div>
+</div>
+<p class="mt-md text-body-lg text-primary max-w-2xl">
+                        Acme Corp's procurement cycle is entering the final week. <span class="font-bold underline decoration-secondary/40">Send follow-up today</span> to align with their quarterly budget finalization.
+                    </p>
+<div class="mt-md flex space-x-md">
+<button class="flex items-center space-x-sm px-md py-sm bg-primary text-white rounded-lg font-button text-button hover:bg-primary/90 transition-all">
+<span>Execute Action</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="flex items-center space-x-sm px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all">
+<span class="material-symbols-outlined text-sm">close</span>
+<span class="font-button text-button">Dismiss</span>
+</button>
+</div>
+</div>
+<!-- Workflow Actions -->
+<div class="flex items-center justify-between glass-panel p-md rounded-xl border border-emerald-900/5">
+<div class="flex items-center space-x-md">
+<span class="material-symbols-outlined text-primary" data-icon="event_available">event_available</span>
+<div>
+<p class="font-body-md font-semibold text-primary">Meeting with Sarah Jenkins (CFO)</p>
+<p class="text-body-sm text-on-surface-variant">Completed 2 hours ago • Discussed pricing tiers</p>
+</div>
+</div>
+<button class="px-lg py-sm bg-surface-container-highest text-primary font-button text-button rounded-lg hover:bg-surface-dim transition-all flex items-center space-x-sm">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span>Mark Meeting Complete</span>
+</button>
+</div>
+<!-- AI Email Composer -->
+<div class="glass-panel rounded-xl overflow-hidden shadow-xl border border-emerald-900/5">
+<div class="px-lg py-md border-b border-emerald-900/5 flex items-center justify-between bg-surface-container-low">
+<div class="flex items-center space-x-md">
+<span class="material-symbols-outlined text-primary" data-icon="mail">mail</span>
+<h3 class="font-h3 text-h3 text-primary">Draft: Follow-up Proposal Alignment</h3>
+</div>
+<div class="flex space-x-sm">
+<span class="px-sm py-xs bg-emerald-900/5 text-emerald-900 text-[10px] font-label-caps rounded uppercase">AI Drafted</span>
+<span class="px-sm py-xs bg-secondary-container/30 text-secondary text-[10px] font-label-caps rounded uppercase">High Priority</span>
+</div>
+</div>
+<div class="p-lg space-y-md">
+<div class="grid grid-cols-[80px_1fr] items-center gap-md border-b border-emerald-900/5 pb-md">
+<span class="font-label-caps text-on-surface-variant">To:</span>
+<span class="font-body-md text-primary">sarah.jenkins@acmecorp.com</span>
+</div>
+<div class="grid grid-cols-[80px_1fr] items-center gap-md border-b border-emerald-900/5 pb-md">
+<span class="font-label-caps text-on-surface-variant">Subject:</span>
+<span class="font-body-md text-primary">Next Steps: Global Expansion Partnership Proposal</span>
+</div>
+<div class="pt-md">
+<div class="bg-surface-container-lowest p-lg rounded-lg border border-emerald-900/5 text-body-lg text-primary leading-relaxed">
+                                Dear Sarah,<br/><br/>
+                                It was great speaking with you and the team earlier today. Following up on our discussion regarding the Enterprise tier, I've adjusted the implementation timeline to ensure it aligns perfectly with your Q4 expansion goals.<br/><br/>
+                                Given your current budget finalization window, I’ve expedited the contract generation. I’m confident this structure provides the scalability Acme Corp requires while staying within the $120,000 threshold discussed.<br/><br/>
+                                Looking forward to your thoughts.<br/><br/>
+                                Best regards,<br/>
+                                Vantage Executive Team
+                            </div>
+</div>
+</div>
+<div class="px-lg py-md bg-surface-container-low flex items-center justify-between">
+<div class="flex space-x-md">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="format_bold">format_bold</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="attach_file">attach_file</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="insert_link">insert_link</span>
+</button>
+</div>
+<div class="flex space-x-md">
+<button class="px-lg py-md text-primary font-button text-button hover:bg-emerald-50 rounded-lg">Save Draft</button>
+<button class="px-xl py-md bg-primary text-white font-button text-button rounded-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">Send Now</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Sidebar (Automated Next Steps) -->
+<aside class="col-span-12 lg:col-span-4 space-y-gutter">
+<!-- Next Steps List -->
+<div class="glass-panel p-lg rounded-xl shadow-lg border border-emerald-900/5">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-h3 text-h3 text-primary">Automated Next Steps</h3>
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+</div>
+<div class="space-y-md">
+<div class="group flex items-start space-x-md p-md rounded-lg hover:bg-emerald-50/50 transition-all cursor-pointer border border-transparent hover:border-emerald-900/5">
+<div class="w-8 h-8 rounded-full border-2 border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shrink-0">
+<span class="material-symbols-outlined text-sm">schedule</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md font-semibold text-primary">Schedule follow-up call</p>
+<p class="text-body-sm text-on-surface-variant">Recommended for tomorrow morning</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<div class="group flex items-start space-x-md p-md rounded-lg hover:bg-emerald-50/50 transition-all cursor-pointer border border-transparent hover:border-emerald-900/5">
+<div class="w-8 h-8 rounded-full border-2 border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shrink-0">
+<span class="material-symbols-outlined text-sm">description</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md font-semibold text-primary">Generate contract draft</p>
+<p class="text-body-sm text-on-surface-variant">Based on Proposal v2 templates</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<div class="group flex items-start space-x-md p-md rounded-lg hover:bg-emerald-50/50 transition-all cursor-pointer border border-transparent hover:border-emerald-900/5">
+<div class="w-8 h-8 rounded-full border-2 border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shrink-0">
+<span class="material-symbols-outlined text-sm">analytics</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md font-semibold text-primary">Update revenue forecast</p>
+<p class="text-body-sm text-on-surface-variant">Q4 projection adjustment needed</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+</div>
+<button class="w-full mt-lg py-md border-2 border-dashed border-primary/10 rounded-xl text-on-surface-variant font-button text-button hover:border-primary/30 transition-all">
+                        + Add Custom Task
+                    </button>
+</div>
+<!-- Deal Stakeholders -->
+<div class="glass-panel p-lg rounded-xl shadow-lg border border-emerald-900/5">
+<h3 class="font-h3 text-h3 text-primary mb-lg">Key Stakeholders</h3>
+<div class="space-y-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-md">
+<img class="w-10 h-10 rounded-full object-cover border border-emerald-900/10" data-alt="A portrait of a professional woman with a warm and expert expression, set against a blurred background of a modern, high-tech corporate office. The lighting is sophisticated and bright, highlighting her face with a clear, soft focus. The aesthetic is clean and minimalist, using a color palette of cool grays, deep emerald, and soft white highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBet5pbaYm8Rey6GfPIS7-gzlfFgJsf4UZpdwrXjA0-aBtHyTVKUV1-9VHGW1xOGdOqDisaMwx8zM42sLdNmpbvU8Li27hoOns-waOM_0_eDz3GgrLoHzatXlZ4pAt_SwJlnsAUyzCLNfv1w6KbioMAkxmnOnTjW949NtzKVQQiTKWLG2LgSdEirqdjxeZ08WtoEdfS2ZZt-fNIMQZoPPCzZ0x5GLy4KwfbKiTShnzImj8rcDLvX-FS2pqyHGCwnv9HeKyM84tz2g"/>
+<div>
+<p class="font-body-md font-bold text-primary">Sarah Jenkins</p>
+<p class="text-[10px] font-label-caps text-on-surface-variant uppercase">Decision Maker • CFO</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-md">
+<img class="w-10 h-10 rounded-full object-cover border border-emerald-900/10" data-alt="A portrait of a male tech professional in a high-key, modern office setting. He is looking thoughtfully towards the camera with a subtle, confident smile. The background features light-filled, minimalist glass structures and soft greenery. The image follows a light-mode aesthetic with a refined palette of emerald greens and neutral tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCyx0Bb0UCMC6EH9T9HTqSZjHab_K99QT5hEjxUpKNgUy4AlFWMxNMUKi8qCGDP23z99IN02YFQcgAfYE263vYjDLz9whQJUIlryMuyXhdVYH1cCQrTcHJxKvWMfzsjXPwalT1hZQbLLMzXdFmf7ZN3EVW5j9f2-6vDeWcHaDHL66X-LkSn38yQvhbnmPdJJl7kAMCXMEcqGcTKAVHQ2gX9sS4QQQIj58s8icyaO81B4Li2WWpIiApw31wwnHu49zyaqmKxpy4YQ"/>
+<div>
+<p class="font-body-md font-bold text-primary">Marcus Thorne</p>
+<p class="text-[10px] font-label-caps text-on-surface-variant uppercase">Champion • VP Ops</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline Snapshot -->
+<div class="glass-panel p-lg rounded-xl shadow-lg border border-emerald-900/5 bg-primary text-white">
+<h3 class="font-h3 text-h3 mb-md">Deal Velocity</h3>
+<div class="flex items-center justify-between mb-sm">
+<span class="text-body-sm opacity-80">Average Cycle</span>
+<span class="text-body-sm font-bold">45 Days</span>
+</div>
+<div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 72%"></div>
+</div>
+<p class="mt-md text-body-sm opacity-80 leading-snug">
+                        This deal is moving 12% faster than your average Enterprise account.
+                    </p>
+</div>
+</aside>
+</div>
+</main>
+<!-- Contextual FAB (Suppressed on detail pages as per mandate, but added logic for Dashboard/Home) -->
+<!-- Not rendered here due to 'Contextual FAB Suppression' rule for Details screens -->
+</body></html>

@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+:root {
+  /* Vantage - Professional Executive Palette */
+  --primary: #003527;
+  --primary-container: #064e3b;
+  --on-primary-container: #80bea6;
+  --secondary: #735c00;
+  --secondary-fixed: #ffe088;
+  --background: #f8f9fa;
+  --surface: #f8f9fa;
+  --on-surface: #191c1d;
+  --on-surface-variant: #404944;
+  --surface-container: #edeeef;
+  --surface-container-low: #f3f4f5;
+  --surface-container-high: #e7e8e9;
+  --border-light: rgba(0, 53, 39, 0.05);
+  
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+  background-color: var(--background);
+  color: var(--on-background);
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Vantage Glass Card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(6, 78, 59, 0.08);
+}
+
+/* Navigation & Header */
+.vantage-nav {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  border-right: 1px solid var(--border-light);
+}
+
+.vantage-header {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: 0 20px 40px rgba(6, 78, 59, 0.05);
+}
+
+/* Buttons */
+.btn-vantage {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+
+.btn-vantage-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-vantage-primary:hover {
+  filter: brightness(1.2);
+  transform: translateY(-1px);
+}
+
+.btn-vantage-secondary {
+  background: var(--secondary-fixed);
+  color: var(--on-surface);
+}
+
+/* Typography */
+h1, h2, h3 {
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.label-caps {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Material Icons Utility */
+.icon {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Dashboard Specifics */
+.deal-amount {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--primary);
+}
+
+.prob-badge {
+  background: var(--secondary-fixed);
+  color: #735c00;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d9dadb;
+  border-radius: 10px;
+}
